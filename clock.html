@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="en">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="Generator" content="EditPlus®">
+  <meta name="Author" content="">
+  <meta name="Keywords" content="">
+  <meta name="Description" content="">
+  <title>时钟</title>
+  <!--CSS层叠样式  修饰 美化加工-->
+  <style type="text/css">
+	*{margin:0px;padding:0px;}
+	/*body{background:url("images/1.jpg");}*/
+	#canvas{margin:100px auto;display:block;}
+  </style>
+ </head>
+ <body>
+	<!--画布 作用 特效 开发游戏 背景 对象 默认宽高300 150-->
+	<canvas id="canvas" width="500" height="500">	
+	</canvas>
+		
+	<script>
+		//获取绘图对象
+		var canvas = document.getElementById('canvas');//取得画布
+		var context = canvas.getContext('2d');//绘图的轨迹 圆？椭圆？...
+		
+		function draw(){
+			var radius = Math.min(canvas.width / 2, canvas.height / 2) - 50;
+            var centerx = canvas.width / 2;
+            var centery = canvas.height / 2;
+            context.clearRect(0, 0, canvas.width, canvas.height);
+			//画大圆：表盘
+			context.beginPath();
+			context.lineWidth = "10";
+			context.strokeStyle ="black";
+			context.arc(centerx,centery,radius,0,Math.PI*2,true); //画圆的方法
+			context.stroke();//划线
+			context.closePath(); 
+			
+			//如何与本地时间挂钩
+			var time=new Date();
+			var h=time.getHours();
+			var m=time.getMinutes();
+			var s=time.getSeconds();
+			h = h>12?h-12:h;
+			h = h+m/60;
+			m = m+s/60;
+
+			//画分刻度时刻度
+			//分刻度
+			for(var i=0;i<60;i++){
+				context.save();   //保存画布
+				context.translate(centerx,centery);
+				context.rotate(6*i*Math.PI/180);//旋转
+				context.strokeStyle ="gray";
+				context.beginPath();
+				context.moveTo(0,-180);
+				context.lineTo(0,-190);
+				context.stroke();//划线
+				context.closePath();
+				context.restore();  //释放画布
+			}
+			
+			//时刻度
+			for(var i=0;i<12;i++){
+				var num = i+3>12?i+3-12:i+3;
+				context.save();   //保存画布
+				context.translate(centerx,centery);
+				context.rotate(30*i*Math.PI/180);//旋转
+				context.strokeStyle ="black";
+				context.beginPath();
+				context.moveTo(0,-170);
+				context.lineTo(0,-190);
+				context.stroke();//划线
+				context.closePath();
+				context.restore();  //释放画布
+			}
+
+			//数字
+			var r = radius - 40;
+            context.font = "bold 20px 微软雅黑";
+            Drawtext("1", centerx + (Math.cos(60 * Math.PI / 180) * r), centery - (Math.sin(60 * Math.PI / 180) * r));
+            Drawtext("2", centerx + (Math.cos(30 * Math.PI / 180) * r), centery - (Math.sin(30 * Math.PI / 180) * r));
+            Drawtext("3", centerx + (Math.cos(0 * Math.PI / 180) * r), centery - (Math.sin(0 * Math.PI / 180) * r));
+            Drawtext("4", centerx + (Math.cos(330 * Math.PI / 180) * r), centery - (Math.sin(330 * Math.PI / 180) * r));
+            Drawtext("5", centerx + (Math.cos(300 * Math.PI / 180) * r), centery - (Math.sin(300 * Math.PI / 180) * r));
+            Drawtext("6", centerx + (Math.cos(270 * Math.PI / 180) * r), centery - (Math.sin(270 * Math.PI / 180) * r));
+            Drawtext("7", centerx + (Math.cos(240 * Math.PI / 180) * r), centery - (Math.sin(240 * Math.PI / 180) * r));
+            Drawtext("8", centerx + (Math.cos(210 * Math.PI / 180) * r), centery - (Math.sin(210 * Math.PI / 180) * r));
+            Drawtext("9", centerx + (Math.cos(180 * Math.PI / 180) * r), centery - (Math.sin(180 * Math.PI / 180) * r));
+            Drawtext("10", centerx + (Math.cos(150 * Math.PI / 180) * r), centery - (Math.sin(150 * Math.PI / 180) * r));
+            Drawtext("11", centerx + (Math.cos(120 * Math.PI / 180) * r), centery - (Math.sin(120 * Math.PI / 180) * r));
+            Drawtext("12", centerx + (Math.cos(90 * Math.PI / 180) * r), centery - (Math.sin(90 * Math.PI / 180) * r));
+
+			//文字
+			context.save();
+			context.strokeStyle="#000000";
+			context.font = "80px Tangerine serif"; 
+			context.textAlign="center";
+			context.textBaseline="middle";
+			context.strokeText("canvas",centerx,centery+65);    
+			context.restore(); 
+
+			
+			//画时针 分针 秒针
+			//时针
+			context.save();
+			context.strokeStyle ="#0066ff";
+			context.translate(centerx,centery);
+			context.rotate(h*30*Math.PI/180);
+			context.beginPath();
+			context.moveTo(0,-100);
+			context.lineTo(0,20);
+			context.stroke();
+			context.closePath();
+			context.restore();
+
+			//分针
+			context.save();
+			context.strokeStyle ="#33ff00";
+			context.lineWidth = "7";
+			context.translate(centerx,centery);
+			context.rotate(m*6*Math.PI/180);
+			context.beginPath();
+			context.moveTo(0,-130);
+			context.lineTo(0,15);
+			context.stroke();
+			context.closePath();
+			context.restore();
+
+			//秒针
+			context.save();
+			context.strokeStyle ="red";
+			context.lineWidth = "5";
+			context.translate(centerx,centery);
+			context.rotate(s*6*Math.PI/180);
+			context.beginPath();
+			context.moveTo(0,-150);
+			context.lineTo(0,20);
+			context.stroke();
+			context.closePath();
+			//中心圆
+			context.beginPath();
+			context.fillStyle = "#000";
+			context.arc(0,0,5,0,Math.PI*2,true);
+			context.fill();
+			context.stroke();
+			context.closePath();
+			//针脚圆
+			context.beginPath();
+			context.fillStyle = "#000";
+			context.arc(0,-130,5,0,Math.PI*2,true);
+			context.fill();
+			context.stroke();
+			context.closePath();
+			context.restore();
+
+		}
+		function Drawtext(text, x, y) {
+            context.save();
+            x -= (context.measureText(text).width / 2);
+            y += 9;
+            context.beginPath();
+            context.translate(x, y);
+            context.fillText(text, 0, 0);
+            context.restore();
+        }
+		draw();
+		setInterval(draw,1000);
+
+
+		
+
+
+	</script>
+ </body>
+</html>
